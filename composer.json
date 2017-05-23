@@ -1,0 +1,28 @@
+{
+    "name": "ursuleacv/wallaby",
+    "description": "A simple lightweight framework for building small apps in PHP",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Valentin Ursuleac",
+            "email": "ursuleacv@gmail.com",
+            "homepage": "http://valnet.ca",
+            "role": "Developer"
+        }
+    ],
+    "keywords": [
+        "php",
+        "mvc",
+        "simple",
+        "micro",
+        "wallaby"
+    ],
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wallaby\\": "src/Wallaby/"
+        }
+    }
+}
