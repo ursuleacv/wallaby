@@ -52,13 +52,22 @@ class Router
 
                 if (method_exists($controller, $action)) {
 
-                    call_user_func_array([$controller, $action], $this->getParameters());
+                    parse_str($this->getQueryString(), $queryString);
+
+                    $parameters = array_merge($this->getParameters(), $queryString);
+
+                    call_user_func_array([$controller, $action], $parameters);
 
                     return;
                 }
             }
         }
         $this->handleError();
+    }
+
+    private function getQueryString()
+    {
+        return $q = isset($this->route['query']) ? ltrim($this->route['query'], '?') : null;
     }
 
     /**
