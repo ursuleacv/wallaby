@@ -20,6 +20,11 @@ class View
     public $theme;
 
     /**
+     * @var string
+     */
+    public $pageUri;
+    
+    /**
      * @var array path to css and js files
      */
     private $layoutFiles = [];

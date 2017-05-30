@@ -20,6 +20,11 @@ abstract class Controller
     protected $title;
 
     /**
+     * @var string
+     */
+    protected $pageUri;
+
+    /**
      * If ajax
      *
      * @return boolean
@@ -45,6 +50,8 @@ abstract class Controller
         $view->layout = $this->layout;
 
         $view->title = isset($this->title) ? $this->title : null;
+
+        $view->pageUri = isset($this->pageUri) ? $this->pageUri : null;
 
         $view->render($viewPath, $data);
     }
