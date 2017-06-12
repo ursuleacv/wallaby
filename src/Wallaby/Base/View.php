@@ -94,6 +94,40 @@ class View
     }
 
     /**
+     * Render Partial
+     *
+     * @param string path folder/file
+     * @param array data
+     * @return void
+     */
+    public function renderPartial($viewPath, $data = null)
+    {
+        if ($this->theme) {
+            $viewFile = ROOT . '/public/themes/'.$this->theme.'/views/'. $viewPath . '.php'; // path to theme view
+        } else {
+            $viewFile = ROOT . '/App/Views/' . $viewPath . '.php'; // path to view
+        }
+        
+        // send view to $content
+        ob_start();
+
+        // extract data
+        if (is_array($data)) {
+            extract($data);
+        }
+
+        if (is_file($viewFile)) {
+            require_once $viewFile;
+        } else {
+            echo '<p>View <b>' . $viewFile . '</b> Not Found!</p>';
+        }
+
+        $content = ob_get_clean();
+
+        echo $content;
+    }
+    
+    /**
      *
      * $this->staticContent
      *

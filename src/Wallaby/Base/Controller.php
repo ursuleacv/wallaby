@@ -57,6 +57,28 @@ abstract class Controller
     }
 
     /**
+     * Render Partial
+     *
+     * @param string $viewPath
+     * @param array $data
+     * @return void
+     */
+    public function renderPartial($viewPath, $data = null)
+    {
+        $view = new View();
+
+        $view->theme = $this->theme;
+
+        $view->layout = null;
+
+        $view->title = isset($this->title) ? $this->title : null;
+
+        $view->pageUri = isset($this->pageUri) ? $this->pageUri : null;
+
+        $view->renderPartial($viewPath, $data);
+    }
+
+    /**
      * Redirect
      *
      * @param string $path
