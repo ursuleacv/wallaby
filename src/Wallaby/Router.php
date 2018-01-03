@@ -28,7 +28,12 @@ class Router
 
         $this->config = $config;
 
-        $this->config['routes'] = [$this->config['routes'] => []];
+        // $this->config['routes'] = [$this->config['routes'] => []];
+
+        // if in routes table there is a string it becomes a key
+        if (!is_array($this->config['routes'])) {
+            $this->config['routes'] = [$this->config['routes'] => []];
+        }
     }
 
     /**
@@ -43,7 +48,7 @@ class Router
         if ($this->searchRoute($url)) {
 
             $controllerName = 'App\Controllers\\' . $this->getNormalName($this->route['controller']) . 'Controller';
-            
+
             if (class_exists($controllerName)) {
 
                 $controller = new $controllerName();

@@ -23,7 +23,7 @@ class View
      * @var string
      */
     public $pageUri;
-    
+
     /**
      * @var array path to css and js files
      */
@@ -53,13 +53,13 @@ class View
     public function render($viewPath, $data = null)
     {
         if ($this->theme) {
-            $viewFile = ROOT . '/public/themes/'.$this->theme.'/views/'. $viewPath . '.php'; // path to theme view
-            $layoutFile = ROOT . '/public/themes/'.$this->theme.'/views/'. $this->layout . '.php'; // path to theme layout
+            $viewFile = ROOT . '/' . PUBLIC_DIR . '/themes/' . $this->theme . '/views/' . $viewPath . '.php'; // path to theme view
+            $layoutFile = ROOT . '/' . PUBLIC_DIR . '/themes/' . $this->theme . '/views/' . $this->layout . '.php'; // path to theme layout
         } else {
             $viewFile = ROOT . '/App/Views/' . $viewPath . '.php'; // path to view
-            $layoutFile = ROOT . '/App/Views/' . $this->layout . '.php';// path to layout
+            $layoutFile = ROOT . '/App/Views/' . $this->layout . '.php'; // path to layout
         }
-        
+
         // send view to $content
         ob_start();
 
@@ -103,11 +103,11 @@ class View
     public function renderPartial($viewPath, $data = null)
     {
         if ($this->theme) {
-            $viewFile = ROOT . '/public/themes/'.$this->theme.'/views/'. $viewPath . '.php'; // path to theme view
+            $viewFile = ROOT . '/' . PUBLIC_DIR . '/themes/' . $this->theme . '/views/' . $viewPath . '.php'; // path to theme view
         } else {
             $viewFile = ROOT . '/App/Views/' . $viewPath . '.php'; // path to view
         }
-        
+
         // send view to $content
         ob_start();
 
@@ -126,7 +126,7 @@ class View
 
         echo $content;
     }
-    
+
     /**
      *
      * $this->staticContent
