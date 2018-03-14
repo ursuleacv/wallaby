@@ -63,7 +63,7 @@ abstract class Controller
      * @param array $data
      * @return void
      */
-    public function renderPartial($viewPath, $data = null)
+    public function renderPartial($viewPath, $data = null, $return = false)
     {
         $view = new View();
 
@@ -74,6 +74,10 @@ abstract class Controller
         $view->title = isset($this->title) ? $this->title : null;
 
         $view->pageUri = isset($this->pageUri) ? $this->pageUri : null;
+
+        if ($return) {
+            return $view->renderPartial($viewPath, $data, $return);
+        }
 
         $view->renderPartial($viewPath, $data);
     }

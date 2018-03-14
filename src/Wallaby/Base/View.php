@@ -100,7 +100,7 @@ class View
      * @param array data
      * @return void
      */
-    public function renderPartial($viewPath, $data = null)
+    public function renderPartial($viewPath, $data = null, $return = false)
     {
         if ($this->theme) {
             $viewFile = ROOT . '/' . PUBLIC_DIR . '/themes/' . $this->theme . '/views/' . $viewPath . '.php'; // path to theme view
@@ -108,23 +108,23 @@ class View
             $viewFile = ROOT . '/App/Views/' . $viewPath . '.php'; // path to view
         }
 
-        // send view to $content
-        ob_start();
-
         // extract data
         if (is_array($data)) {
             extract($data);
         }
 
+        if ($return) {
+            ob_start();
+            ob_implicit_flush(false);
+            require ($viewFile);
+            return ob_get_clean();
+        }
+
         if (is_file($viewFile)) {
-            require_once $viewFile;
+            require $viewFile;
         } else {
             echo '<p>View <b>' . $viewFile . '</b> Not Found!</p>';
         }
-
-        $content = ob_get_clean();
-
-        echo $content;
     }
 
     /**
