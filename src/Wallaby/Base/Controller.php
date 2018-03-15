@@ -32,6 +32,16 @@ abstract class Controller
     }
 
     /**
+     * If ajax
+     *
+     * @return boolean
+     */
+    public function isAjax()
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+    }
+
+    /**
      * Render
      *
      * @param string $viewPath
