@@ -40,6 +40,8 @@ class View
      */
     public function __construct()
     {
+        defined('PUBLIC_DIR') or define('PUBLIC_DIR', 'public');
+
         $this->layoutFiles = require_once ROOT . '/config/content.php';
     }
 

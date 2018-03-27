@@ -23,7 +23,7 @@ class Router
     public function __construct($config)
     {
         if (empty($config)) {
-            throw new InvalidArgumentException('Required config not passed');
+            throw new \InvalidArgumentException('Required config not passed');
         }
 
         $this->config = $config;

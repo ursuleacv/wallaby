@@ -266,6 +266,8 @@ abstract class Controller
             header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
         }
 
+        $output = '';
+
         if (APP_DEBUG) {
             $output = "<h1>Error [$code]</h1>\n";
             $output .= "<p>$message ($file:$line)</p>\n";
@@ -328,6 +330,8 @@ abstract class Controller
         if (!headers_sent()) {
             http_response_code($code);
         }
+
+        $output = '';
 
         if (APP_DEBUG) {
             $output = '<h1>' . get_class($exception) . "</h1>\n";
