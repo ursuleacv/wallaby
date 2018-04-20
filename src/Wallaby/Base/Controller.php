@@ -228,7 +228,13 @@ abstract class Controller
                 $log .= 'REQUEST_URI=' . $_SERVER['REQUEST_URI'];
             }
 
-            // TODO log error
+            if (class_exists('Monolog\\Logger')) {
+                $logger = new \Monolog\Logger('system');
+                $logger->pushHandler(new \Monolog\Handler\StreamHandler(
+                    ROOT . '/storage/system_error.log', \Monolog\Logger::WARNING)
+                );
+                $logger->error($log);
+            }
 
             try {
                 $this->displayError($code, $message, $file, $line);
@@ -342,6 +348,14 @@ abstract class Controller
         } else {
             $output .= '<h1>' . get_class($exception) . "</h1>\n";
             $output .= '<p>' . $exception->getMessage() . '</p>';
+        }
+
+        if (class_exists('Monolog\\Logger')) {
+            $logger = new \Monolog\Logger('system');
+            $logger->pushHandler(new \Monolog\Handler\StreamHandler(
+                ROOT . '/storage/system_error.log', \Monolog\Logger::WARNING)
+            );
+            $logger->error($exception);
         }
 
         if (APP_WANTS_JSON && $this->wantsJson()) {
