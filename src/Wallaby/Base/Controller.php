@@ -343,8 +343,6 @@ abstract class Controller
             $output = '<h1>' . get_class($exception) . "</h1>\n";
             $output .= '<p>' . $exception->getMessage() . ' (' . $exception->getFile() . ':' . $exception->getLine() . ')</p>';
             $output .= '<pre>' . $exception->getTraceAsString() . '</pre>';
-
-            $trace = $exception->getTraceAsString();
         } else {
             $output .= '<h1>' . get_class($exception) . "</h1>\n";
             $output .= '<p>' . $exception->getMessage() . '</p>';
@@ -355,7 +353,8 @@ abstract class Controller
             $logger->pushHandler(new \Monolog\Handler\StreamHandler(
                 ROOT . '/storage/system_error.log', \Monolog\Logger::WARNING)
             );
-            $logger->error($exception);
+            $logger->error($this->jTraceExeption($exception));
+            $logger->error($exception->getMessage() . "\n" . $this->getExceptionTraceAsString($exception));
         }
 
         if (APP_WANTS_JSON && $this->wantsJson()) {
@@ -368,5 +367,100 @@ abstract class Controller
         } else {
             echo $output;
         }
+    }
+
+    private function getExceptionTraceAsString($exception)
+    {
+        $rtn = "";
+        $count = 0;
+        foreach ($exception->getTrace() as $frame) {
+            $args = "";
+            if (isset($frame['args'])) {
+                $args = array();
+                foreach ($frame['args'] as $arg) {
+                    if (is_string($arg)) {
+                        $args[] = "'" . $arg . "'";
+                    } elseif (is_array($arg)) {
+                        $args[] = "Array";
+                    } elseif (is_null($arg)) {
+                        $args[] = 'NULL';
+                    } elseif (is_bool($arg)) {
+                        $args[] = ($arg) ? "true" : "false";
+                    } elseif (is_object($arg)) {
+                        $args[] = get_class($arg);
+                    } elseif (is_resource($arg)) {
+                        $args[] = get_resource_type($arg);
+                    } else {
+                        $args[] = $arg;
+                    }
+                }
+                $args = join(", ", $args);
+            }
+            $file = isset($frame['file']) ? $frame['file'] : '';
+            $line = isset($frame['line']) ? $frame['line'] : '';
+            $func = isset($frame['function']) ? $frame['function'] : '';
+
+            $rtn .= sprintf("#%s %s(%s): %s(%s)\n",
+                $count,
+                $file,
+                $line,
+                $func,
+                $args);
+            $count++;
+        }
+        return $rtn;
+    }
+
+    /**
+     * jTraceEx() - provide a Java style exception trace
+     * @param $exception
+     * @param $seen      - array passed to recursive calls to accumulate trace lines already seen
+     *                     leave as NULL when calling this function
+     * @return array of strings, one entry per trace line
+     */
+    private function jTraceExeption($e, $seen = null)
+    {
+        $starter = $seen ? 'Caused by: ' : '';
+        $result = array();
+        if (!$seen) {
+            $seen = array();
+        }
+
+        $trace = $e->getTrace();
+        $prev = $e->getPrevious();
+        $result[] = sprintf('%s%s: %s', $starter, get_class($e), $e->getMessage());
+        $file = $e->getFile();
+        $line = $e->getLine();
+        while (true) {
+            $current = "$file:$line";
+            if (is_array($seen) && in_array($current, $seen)) {
+                $result[] = sprintf(' ... %d more', count($trace) + 1);
+                break;
+            }
+            $result[] = sprintf(' at %s%s%s(%s%s%s)',
+                count($trace) && array_key_exists('class', $trace[0]) ? str_replace('\\', '.', $trace[0]['class']) : '',
+                count($trace) && array_key_exists('class', $trace[0]) && array_key_exists('function', $trace[0]) ? '.' : '',
+                count($trace) && array_key_exists('function', $trace[0]) ? str_replace('\\', '.', $trace[0]['function']) : '(main)',
+                $line === null ? $file : basename($file),
+                $line === null ? '' : ':',
+                $line === null ? '' : $line);
+            if (is_array($seen)) {
+                $seen[] = "$file:$line";
+            }
+
+            if (!count($trace)) {
+                break;
+            }
+
+            $file = array_key_exists('file', $trace[0]) ? $trace[0]['file'] : 'Unknown Source';
+            $line = array_key_exists('file', $trace[0]) && array_key_exists('line', $trace[0]) && $trace[0]['line'] ? $trace[0]['line'] : null;
+            array_shift($trace);
+        }
+        $result = join("\n", $result);
+        if ($prev) {
+            $result .= "\n" . jTraceEx($prev, $seen);
+        }
+
+        return $result;
     }
 }
