@@ -369,7 +369,7 @@ abstract class Controller
         }
     }
 
-    private function getExceptionTraceAsString($exception)
+    protected function getExceptionTraceAsString($exception)
     {
         $rtn = "";
         $count = 0;
@@ -418,7 +418,7 @@ abstract class Controller
      *                     leave as NULL when calling this function
      * @return array of strings, one entry per trace line
      */
-    private function jTraceExeption($e, $seen = null)
+    protected function jTraceExeption($e, $seen = null)
     {
         $starter = $seen ? 'Caused by: ' : '';
         $result = array();
