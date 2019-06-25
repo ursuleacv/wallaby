@@ -202,4 +202,31 @@ class View
         }
         return $content;
     }
+
+    /**
+     * Renders the content to be inserted in the head section.
+     * The content is rendered using the registered meta tags, link tags, CSS/JS code blocks and files.
+     * @return string the rendered content
+     */
+    protected function renderHeadHtml()
+    {
+        if (!empty($this->css)) {
+            $lines[] = implode("\n", $this->css);
+        }
+        echo empty($lines) ? '' : implode("\n", $lines);
+    }
+
+    /**
+     * Registers a CSS code block.
+     * @param string $css the content of the CSS code block to be registered
+     * @param array $options the HTML attributes for the `<style>`-tag.
+     * @param string $key the key that identifies the CSS code block. If null, it will use
+     * $css as the key. If two CSS code blocks are registered with the same key, the latter
+     * will overwrite the former.
+     */
+    public function registerCss($css, $options = [], $key = null)
+    {
+        $key = $key ?: md5($css);
+        $this->css[$key] = '<style type="text/css">' . $css . '</style>';
+    }
 }
