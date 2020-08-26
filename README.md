@@ -1,5 +1,7 @@
 # wallaby
-A simple lightweight framework for building small apps in PHP
+A simple lightweight MVC framework for building small apps in PHP.
+
+Built in support for layouts, themes, routing.
 
 # Usage
 
@@ -158,8 +160,19 @@ config/app.php
 config/router.php
 
 this will automatically match all routes with the following format
+
 controller/action/param1/param2
+
 controller/action/?param1=value1&param2=value2
+
+Ex: 
+
+http:localhost/site/register
+
+http:localhost/site/contact
+
+http:localhost/product/edit/123
+
 
 ```php
 <?php
